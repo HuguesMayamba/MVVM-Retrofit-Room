@@ -1,0 +1,149 @@
+package com.hugues.swars.ui.fragments
+
+import android.os.Bundle
+import android.view.View
+import android.widget.AbsListView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.hugues.swars.R
+import com.hugues.swars.adapters.CharacterAdapter
+import com.hugues.swars.ui.FilmActivity
+import com.hugues.swars.ui.FilmViewModel
+import com.hugues.swars.util.Constants.Companion.QUERY_PAGE_SIZE
+import com.hugues.swars.util.Resource
+import kotlinx.android.synthetic.main.fragment_character.*
+import kotlinx.android.synthetic.main.fragment_character.itemErrorMessage
+import kotlinx.android.synthetic.main.fragment_character.paginationProgressBar
+import kotlinx.android.synthetic.main.fragment_film.*
+import kotlinx.android.synthetic.main.item_error_message.*
+
+class CharacterFragment : Fragment(R.layout.fragment_character) {
+
+    lateinit var viewModel: FilmViewModel
+    lateinit var characterAdapter: CharacterAdapter
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = (activity as FilmActivity).viewModel
+        setupRecyclerView()
+
+        characterAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putSerializable("character", it)
+            }
+            findNavController().navigate(
+                R.id.action_characterFragment_to_characterDetailFragment,
+                bundle
+            )
+        }
+
+        viewModel.character.observe(viewLifecycleOwner, Observer { response ->
+            when(response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    hideErrorMessage()
+                    response.data?.let { newsResponse ->
+                        characterAdapter.differ.submitList(newsResponse.results.toList())
+
+                        if(isLastPage) {
+                            rvFlm.setPadding(0, 0, 0, 0)
+                        }
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { message ->
+                        Toast.makeText(activity, "Ha ocurrido un error: $message", Toast.LENGTH_LONG).show()
+                        showErrorMessage(message)
+                    }
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+        })
+
+        btnRetry.setOnClickListener {
+            viewModel.getFilm()
+        }
+    }
+
+    private fun hideProgressBar() {
+        paginationProgressBar.visibility = View.INVISIBLE
+        isLoading = false
+    }
+
+    private fun showProgressBar() {
+        paginationProgressBar.visibility = View.VISIBLE
+        isLoading = true
+    }
+
+    private fun hideErrorMessage() {
+        itemErrorMessage.visibility = View.INVISIBLE
+        isError = false
+    }
+
+    private fun showErrorMessage(message: String) {
+        itemErrorMessage.visibility = View.VISIBLE
+        tvErrorMessage.text = message
+        isError = true
+    }
+
+    var isError = false
+    var isLoading = false
+    var isLastPage = false
+    var isScrolling = false
+
+    val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+            val visibleItemCount = layoutManager.childCount
+            val totalItemCount = layoutManager.itemCount
+
+            val isNoErrors = !isError
+            val isNotLoadingAndNotLastPage = !isLoading && !isLastPage
+            val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
+            val isNotAtBeginning = firstVisibleItemPosition >= 0
+            val isTotalMoreThanVisible = totalItemCount >= QUERY_PAGE_SIZE
+            val shouldPaginate = isNoErrors && isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
+                    isTotalMoreThanVisible && isScrolling
+            if(shouldPaginate) {
+                viewModel.getFilm()
+                isScrolling = false
+            }
+        }
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                isScrolling = true
+            }
+        }
+    }
+
+    private fun setupRecyclerView() {
+        characterAdapter = CharacterAdapter()
+        rvCharacter.apply {
+            adapter = characterAdapter
+            layoutManager = LinearLayoutManager(activity)
+            addOnScrollListener(this@CharacterFragment.scrollListener)
+            addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+        }
+    }
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Swars</string>
+    <string name="year">Año</string>
+    <string name="film_characters">Personajes de la película</string>
+    <string name="gender">Género</string>
+    <string name="film_character_name">Nombre</string>
+    <string name="Birth">Fecha nacimiento</string>
+    <string name="character_name_title">Nombre personaje</string>
+    <string name="character_name">Nombre</string>
+    <string name="Heigth">Altura</string>
+    <string name="film_title">Nombre película</string>
+    <string name="description">Descripción</string>
+    <string name="films">Peliculas</string>
+    <string name="characters">Personajes</string>
+</resources>
