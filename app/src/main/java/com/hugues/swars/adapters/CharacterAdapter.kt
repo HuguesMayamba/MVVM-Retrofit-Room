@@ -46,7 +46,7 @@ class CharacterAdapter: RecyclerView.Adapter<CharacterAdapter.CharacterViewHolde
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
         val character = differ.currentList[position]
         holder.itemView.apply {
-             Glide.with(this).load("https://homepages.cae.wisc.edu/~ece533/images/pool.png").into(ivCharacterImage)
+             Glide.with(this).load("https://picsum.photos/seed/picsum/200/300").into(ivCharacterImage)
             tvCharacterName.text = character.name
             tvCharacterGender.text = character.gender
             tvCharacterBirth.text = character.birth_year

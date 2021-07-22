@@ -22,7 +22,7 @@ class CharacterDetailFragment : Fragment(R.layout.fragment_detail_characters) {
         val character = listOf(args.character)
 
         Glide.with(this)
-            .load("https://homepages.cae.wisc.edu/~ece533/images/pool.png")
+            .load("https://picsum.photos/seed/picsum/200/300")
             .centerCrop()
             .into(ivCharacterImage)
         tvCharacterName.text = character[0].name

@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/ivFlm"
-        android:layout_width="150dp"
+        android:layout_width="130dp"
         android:layout_height="150dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,6 @@
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toStartOf="@+id/tvFlmYear"
         app:layout_constraintTop_toBottomOf="@+id/tvFlmDescription"/>
-
     <TextView
         android:id="@+id/tvFlmYear"
         android:layout_width="wrap_content"
@@ -60,5 +59,4 @@
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvFlmDescription" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.ConnectivityManager.*
 import android.net.NetworkCapabilities.*
 import android.os.Build
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -29,6 +30,8 @@ class FilmViewModel(
     var filmPage = 1
     var filmDataFilm: DataFilm? = null
     var charactersResponse: DataCharacter? = null
+    var filmSafe: Film? = null
+    val characterList = mutableListOf<String>()
 
     init {
         getFilm()
@@ -50,7 +53,19 @@ class FilmViewModel(
     }
 
     private fun handleFilmResponse(response: Response<DataFilm>) : Resource<DataFilm> {
+
         if(response.isSuccessful) {
+
+                var filmsaved = response.body()?.results
+
+            if (filmsaved != null) {
+                for (i in filmsaved){
+                    filmSafe = i
+                }
+                filmSafe?.let { saveFilm(it) }
+               // Log.d("FILMSAFE", "$filmSafe")
+            }
+
             response.body()?.let { resultResponse ->
                 filmPage++
                 if(filmDataFilm == null) {
@@ -92,6 +107,7 @@ class FilmViewModel(
 
 
     fun saveFilm(film: Film) = viewModelScope.launch {
+
         filmRepository.upsert(film)
     }
 

@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/ivDetailFlm"
-        android:layout_width="150dp"
+        android:layout_width="130dp"
         android:layout_height="145dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,10 +18,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:ellipsize="end"
-        android:maxLines="3"
         android:text="@string/film_title"
         android:textColor="@android:color/black"
-        android:textSize="18sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/ivDetailFlm"
@@ -32,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="10dp"
         android:ellipsize="end"
         android:maxLines="5"
         android:text="@string/description"
@@ -85,10 +84,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFilmCharacters"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitleDetailFilm" />
+        app:layout_constraintTop_toBottomOf="@+id/txtTitleDetailFilm"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
